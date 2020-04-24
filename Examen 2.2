@@ -6,34 +6,19 @@ RES_VECT  CODE    0x0000            ; processor reset vector
     GOTO    START                   ; go to beginning of program
 ; TODO ADD INTERRUPTS HERE IF USED
 MAIN_PROG CODE                      ; let linker place main program
-;variables para el contador:
- i equ 0x30
- j equ 0x32
+
+reg equ 0x30     ;Variables Registro
+aux equ 0x31 ;Variable Auxiliar
  
 START
-MOVLW 0x07 
-MOVWF CMCON
-BCF STATUS, RP1
-BSF STATUS, RP0 
-MOVLW b'00000000' 
-MOVWF TRISB 
-BCF STATUS, RP0 
-MOVLW d'7'
-MOVWF j
-MOVLW d'1'
-MOVWF i
- 
- loop
- ADDWF i,1
- MOVFW i
- DECF j
- BTFSC j,0
- GOTO loop   
- BTFSC j,1
- GOTO loop
- BTFSC j,2
- GOTO loop
- BTFSC j,3
- GOTO loop
+
+ MOVLW d'1'
+ MOVWF aux
+LOOP:
+ MOVF aux,0
+ ADDWF reg,f ; Le suma un uno a j
+ RLF aux,f ;Primer Stop;             Rota el uno del auxiliar a la izquierda
+ BTFSS reg,7 ; Segundo Stop;     Cuando hay un uno en la posicion siete se sale del Loop
+ GOTO LOOP
  
  END
